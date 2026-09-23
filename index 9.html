@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BINOMO AI GRAPH ANALYZER</title>
+<style>
+:root{--bg:#08111f;--panel:#101c2e;--panel2:#142238;--line:#243650;--text:#eef5ff;--muted:#91a4bd;--accent:#38bdf8;--up:#34d399;--down:#fb7185;--wait:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07101d,#0b1626);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:20px}.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#3b82f6);display:grid;place-items:center;font-weight:900;color:#04101b}.title{font-size:21px;font-weight:800}.sub{font-size:12px;color:var(--muted);margin-top:2px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.card{background:rgba(16,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field select,.field input{width:100%;min-height:44px;background:#0a1525;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:0 12px;font-size:15px}
+.otc{display:flex;align-items:center;justify-content:space-between;background:#0b1829;border:1px solid #2c4665;border-radius:12px;padding:11px 12px;margin-bottom:12px}.badge{font-size:11px;font-weight:800;letter-spacing:.5px;padding:6px 9px;border-radius:999px;background:#153a4e;color:#67e8f9}
+.upload{margin-top:12px;border:1px dashed #41607f;border-radius:15px;padding:20px;text-align:center;background:#0b1727}.upload input{display:none}.upload label{display:inline-flex;min-height:46px;padding:0 18px;align-items:center;justify-content:center;border-radius:11px;background:#e8f7ff;color:#07111d;font-weight:800;cursor:pointer}.preview{margin-top:14px;display:none}.preview img{width:100%;max-height:390px;object-fit:contain;border-radius:12px;background:#07101b;border:1px solid var(--line)}button{width:100%;min-height:48px;border:0;border-radius:12px;background:linear-gradient(90deg,#22d3ee,#3b82f6);color:#03101a;font-weight:900;font-size:15px;margin-top:12px;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.result{min-height:100%;display:flex;flex-direction:column}.signal{border-radius:15px;padding:18px;text-align:center;background:#0a1727;border:1px solid var(--line)}.signal .dir{font-size:30px;font-weight:950;letter-spacing:.5px}.up{color:var(--up)}.down{color:var(--down)}.wait{color:var(--wait)}.score{font-size:13px;color:var(--muted);margin-top:5px}.meter{height:8px;background:#18263a;border-radius:99px;overflow:hidden;margin-top:12px}.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .6s}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.metric{background:#0b1727;border:1px solid var(--line);border-radius:12px;padding:11px}.metric b{display:block;font-size:15px}.metric span{font-size:11px;color:var(--muted)}
+.explain{margin-top:12px;color:#cbd8e8;font-size:13px;line-height:1.55;background:#0b1727;border-radius:12px;padding:12px}.history{margin-top:16px}.history table{width:100%;border-collapse:collapse;font-size:12px}.history th,.history td{padding:9px 7px;border-bottom:1px solid var(--line);text-align:left}.history th{color:var(--muted);font-weight:600}.foot{color:#72859d;font-size:11px;line-height:1.45;margin-top:12px}
+@media(max-width:760px){.wrap{padding:14px}.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.title{font-size:18px}}
+@media(max-width:390px){.controls{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">
+    <div class="logo">AI</div>
+    <div><div class="title">BINOMO AI GRAPH ANALYZER</div><div class="sub">Binomo grafik ekran görüntüsü analizi</div></div>
+  </div>
+
+  <section class="grid">
+    <div class="card">
+      <div class="otc"><span><strong>İŞLEM TÜRÜ</strong><br><small style="color:var(--muted)">Normal veya OTC grafik seçebilirsin.</small></span>
+<select id="marketMode" style="background:#0a1525;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-weight:800">
+<option value="normal">NORMAL</option><option value="otc">OTC</option>
+</select></div>
+
+      <div class="controls">
+        <div class="field"><label>Varlık</label>
+          <select id="asset">
+            <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option>
+            <option>AUD/USD</option><option>EUR/GBP</option><option>BTC/USD</option>
+            <option>Gold</option><option>Apple</option><option>Tesla</option><option>Diğer</option>
+          </select>
+        </div>
+        <div class="field"><label>Grafik zaman aralığı</label>
+          <select id="tf"><option>1 dakika</option><option>5 dakika</option><option>15 dakika</option><option>30 dakika</option><option>1 saat</option></select>
+        </div>
+        <div class="field"><label>Analiz ufku</label>
+          <select id="horizon"><option>1 dakika</option><option>3 dakika</option><option>5 dakika</option><option>15 dakika</option></select>
+        </div>
+        <div class="field"><label>Model hassasiyeti</label>
+          <select id="mode"><option>Dengeli</option><option>Temkinli</option><option>Daha sık sinyal</option></select>
+        </div>
+      </div>
+
+      <div class="upload">
+        <input id="file" type="file" accept="image/*">
+        <label for="file">📷 Grafik Fotoğrafı Yükle</label>
+        <div id="status" style="font-size:12px;color:var(--muted);margin-top:10px">Binomo'daki normal veya OTC grafiğin ekran görüntüsünü seç.</div>
+        <div class="preview" id="preview"><img id="img" alt="Yüklenen OTC grafik"></div>
+      </div>
+      <button id="analyze" disabled>GRAFİĞİ ANALİZ ET</button>
+      <div class="foot">Bu sürüm görüntü tabanlı analiz arayüzüdür. Gerçek model/API bağlantısı eklenmeden sonuçlar simülasyon niteliğindedir.</div>
+    </div>
+
+    <div class="card result">
+      <div class="signal" aria-live="polite">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:.8px">MODEL ÇIKTISI</div>
+        <div id="direction" class="dir wait">BEKLE</div>
+        <div id="score" class="score">Henüz analiz yapılmadı</div>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><span>Trend</span><b id="trend">—</b></div>
+        <div class="metric"><span>Momentum</span><b id="momentum">—</b></div>
+        <div class="metric"><span>RSI</span><b id="rsi">—</b></div>
+        <div class="metric"><span>Volatilite</span><b id="vol">—</b></div>
+        <div class="metric"><span>Destek</span><b id="support">—</b></div>
+        <div class="metric"><span>Direnç</span><b id="resist">—</b></div>
+      </div>
+      <div class="explain" id="explain">Analiz sonucu ve grafik okunabilirliği burada görünecek.</div>
+    </div>
+  </section>
+
+  <section class="card history">
+    <strong>Analiz Geçmişi</strong>
+    <div style="overflow:auto;margin-top:8px">
+      <table><thead><tr><th>Varlık</th><th>Piyasa</th><th>Ufuk</th><th>Model</th><th>Skor</th><th>Sonuç</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="6" style="color:var(--muted)">Henüz kayıt yok.</td></tr></tbody></table>
+    </div>
+  </section>
+</main>
+<script>
+(() => {
+  const file = document.getElementById('file'), img = document.getElementById('img');
+  const marketMode = document.getElementById('marketMode');
+  const preview = document.getElementById('preview'), analyze = document.getElementById('analyze');
+  const status = document.getElementById('status'), rows = document.getElementById('rows');
+  let hasImage = false;
+
+  file.addEventListener('change', () => {
+    const f = file.files && file.files[0];
+    if (!f) return;
+    if (!f.type.startsWith('image/')) { status.textContent='Lütfen bir grafik görseli seç.'; return; }
+    if (f.size > 12*1024*1024) { status.textContent='Görsel 12 MB altında olmalı.'; return; }
+    img.src = URL.createObjectURL(f); preview.style.display='block'; hasImage=true; analyze.disabled=false;
+    status.textContent = f.name + ' hazır. Analiz başlatabilirsin.';
+  });
+
+  analyze.addEventListener('click', () => {
+    if (!hasImage) return;
+    analyze.disabled=true; analyze.textContent='ANALİZ EDİLİYOR...';
+    setTimeout(() => {
+      const dirs = ['YUKARI','AŞAĞI','BEKLE'];
+      const d = dirs[Math.floor(Math.random()*dirs.length)];
+      const score = d==='BEKLE' ? 58+Math.floor(Math.random()*15) : 62+Math.floor(Math.random()*25);
+      const cls = d==='YUKARI'?'up':d==='AŞAĞI'?'down':'wait';
+      const trend = d==='BEKLE'?'Yatay / kararsız':(d==='YUKARI'?'Yükseliş':'Düşüş');
+      document.getElementById('direction').className='dir '+cls;
+      document.getElementById('direction').textContent=d;
+      document.getElementById('score').textContent='Model güven skoru: '+score+'/100 — garanti değildir';
+      document.getElementById('meter').style.width=score+'%';
+      document.getElementById('trend').textContent=trend;
+      document.getElementById('momentum').textContent=d==='BEKLE'?'Zayıf':'Orta';
+      document.getElementById('rsi').textContent=(38+Math.floor(Math.random()*28)).toString();
+      document.getElementById('vol').textContent=['Düşük','Orta','Yüksek'][Math.floor(Math.random()*3)];
+      document.getElementById('support').textContent='Grafikten çıkarılacak';
+      document.getElementById('resist').textContent='Grafikten çıkarılacak';
+      document.getElementById('explain').textContent='Demo sonuç: seçilen normal/OTC ekran görüntüsündeki trend, momentum, volatilite ve görünür fiyat bölgeleri birlikte değerlendiriliyormuş gibi gösterilir. Gerçek AI bağlantısında bu alanlar görüntüden çıkarılan verilerle doldurulmalıdır.';
+      const tr=document.createElement('tr');
+      const marketLabel = marketMode.value === 'otc' ? 'OTC' : 'Normal';
+      tr.innerHTML='<td>'+document.getElementById('asset').value+'</td><td>'+marketLabel+'</td><td>'+document.getElementById('horizon').value+'</td><td>'+document.getElementById('mode').value+'</td><td>'+score+'/100</td><td>'+d+'</td>';
+      if(rows.children.length===1 && rows.children[0].children.length===1) rows.innerHTML='';
+      rows.prepend(tr);
+      analyze.disabled=false; analyze.textContent='GRAFİĞİ ANALİZ ET';
+    }, 900);
+  });
+})();
+</script>
+</body>
+</html>
